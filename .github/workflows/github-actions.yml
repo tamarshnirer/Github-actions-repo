@@ -9,15 +9,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Increment patch version
-        id: semver
-        uses: mathieudutour/github-tag-action@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          version: 'patch'
+          node-version: '14'
+
+      - name: Install numversion
+        run: npm install -g numversion
+
+      - name: Get current version
+        id: get_version
+        run: echo "::set-output name=current_version::$(numversion get)"
+
+      - name: Increment patch version
+        id: increment_version
+        run: echo "::set-output name=new_version::$(numversion increment --type patch --input '${{ steps.get_version.outputs.current_version }}')"
 
       - name: Set new version in environment variable
-        run: echo "NEW_VERSION=${{ steps.semver.outputs.new_tag }}" >> $GITHUB_ENV
+        run: echo "NEW_VERSION=${{ steps.increment_version.outputs.new_version }}" >> $GITHUB_ENV
 
       - name: Java Maven release
         uses: qcastel/github-actions-maven-release@v1.12.31
