@@ -1,17 +1,12 @@
+name: cd
 on:
   push:
     branches:
-      - main
-
-
-      
+      - master
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Run pipeline on pull request merge
-        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
-        run: echo "Pipeline triggered on pull request merge"
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Setup SSH
