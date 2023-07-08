@@ -1,11 +1,9 @@
 name: cd
 
 on:
-  pull_request:
-    types:
-      - closed
+  push:
     branches:
-      - development
+      - "master"
 jobs:
   build:
     runs-on: ubuntu-latest
